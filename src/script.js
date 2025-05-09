@@ -3,10 +3,14 @@ import "./styles.css";
 const API_KEY = "98W6TTXU6FLJHM2VJD46CHNNN";
 
 async function getWeatherData(coords) {
-    const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${coords}?key=${API_KEY}`;
-    const response = await fetch(url, { mode: "cors" });
-    const data = await response.json();
-    return data;
+    try {
+        const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${coords}?key=${API_KEY}`;
+        const response = await fetch(url, { mode: "cors" });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw error;
+    }
 }
 
 const form = document.querySelector("form");
@@ -34,8 +38,8 @@ function updateUI(weatherData) {
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = new FormData(form);
-    getWeatherData(data.get("coords")).then((weatherData) =>
-        updateUI(weatherData)
-    );
+    getWeatherData(data.get("coords"))
+        .then((weatherData) => updateUI(weatherData))
+        .catch((err) => console.error(err));
     // updateUI(getWeatherData(data.get("coords")));
 });
